@@ -1,0 +1,9 @@
+version: "3.2"
+services:
+    api:
+        container_name: website-data
+        build:
+            context: ../
+            dockerfile: deployments/api/Dockerfile
+        ports:
+            - "5000:5000"
