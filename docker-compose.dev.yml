@@ -1,0 +1,12 @@
+version: "3.2"
+services:
+    api:
+        container_name: website-data
+        build:
+            context: ./api
+            dockerfile: Dockerfile
+        ports:
+            - "5000:5000"
+        volumes:
+            - ./api/:/code
+        entrypoint: watchmedo auto-restart --recursive --pattern="*.py" --directory="." python ./flaskapi/run.py

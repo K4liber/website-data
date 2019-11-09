@@ -3,7 +3,7 @@ services:
     api:
         container_name: website-data
         build:
-            context: ../
-            dockerfile: deployments/api/Dockerfile
+            context: ./api
+            dockerfile: Dockerfile
         ports:
             - "5000:5000"
