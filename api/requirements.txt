@@ -2,3 +2,4 @@ flask
 Flask
 pytest
 watchdog
+mysql-connector

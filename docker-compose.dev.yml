@@ -5,8 +5,18 @@ services:
         build:
             context: ./api
             dockerfile: Dockerfile
+        links:
+            - db
         ports:
             - "5000:5000"
         volumes:
             - ./api/:/code
         entrypoint: watchmedo auto-restart --recursive --pattern="*.py" --directory="." python ./flaskapi/run.py
+    db:
+        image: mysql:5.7
+        ports:
+            - "32000:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d/:ro
