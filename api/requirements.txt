@@ -3,3 +3,4 @@ Flask
 pytest
 watchdog
 mysql-connector
+sqlalchemy
