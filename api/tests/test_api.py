@@ -135,6 +135,9 @@ def test_pickup_order_content():
     session = Session()
     order_website_from_db = session.query(OrderWebsite) \
         .filter_by(id=order_id).first()
+    website_content_from_db = session.query(WebsiteContent) \
+        .filter_by(order_id=order_id).first()
+    assert website_content_from_db is not None
     assert order_website_from_db.order_status
     url = f'http://api:5000/pickup_order/{order_id}'
     r = requests.get(url)
@@ -142,6 +145,11 @@ def test_pickup_order_content():
 
     for key in response_dict.keys():
         assert key in {'order_id', 'content'}
+    
+    session.delete(order_website_from_db)
+    session.delete(website_content_from_db)
+    session.commit()
+    session.close()
 
 
 def test_pickup_order_images():
@@ -178,3 +186,9 @@ def test_pickup_order_images():
         img_ext = supported_img_types[website_image.img_type]
         image_name = f'img_{website_image.id}.{img_ext}'
         assert image_name in zip_file_namelist
+        session.delete(website_image)
+
+    session.delete(order_website_from_db)
+    session.commit()
+    session.close()
+
