@@ -1,5 +1,5 @@
 from flask import request
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import InterfaceError
 
 from flaskapi.entities.base import Base
 from flaskapi.init import (
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     while db_connection is None:
         try:
             db_connection = db_engine.connect()
-        except OperationalError:
+        except InterfaceError:
             db_connection = None
 
     db_connection.close()
