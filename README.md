@@ -1,13 +1,13 @@
 ## website-data
-Run development environment:
-```
-make develop
-```
 Build production environment:
 ```
 make install
 ```
-Run tests:
+Run development environment:
+```
+make develop
+```
+Run tests (make sure that the development environment is running):
 ```
 make test
 ```
