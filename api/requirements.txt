@@ -4,3 +4,7 @@ pytest
 watchdog
 mysql-connector
 sqlalchemy
+redis
+rq
+requests
+bs4

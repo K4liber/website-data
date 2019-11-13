@@ -4,4 +4,4 @@ WORKDIR /code
 RUN apt-get update
 RUN pip install -r requirements.txt
 RUN pip install -e .
-ENTRYPOINT python ./flaskapi/run.py
+ENTRYPOINT ["/docker_entrypoint.sh"]

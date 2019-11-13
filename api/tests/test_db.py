@@ -1,7 +1,6 @@
 import sqlalchemy
 import os
 
-from flaskapi.config import config
 from flaskapi.entities.order_website import OrderWebsite
 from flaskapi.entities.website_content import WebsiteContent
 from flaskapi.entities.website_image import WebsiteImage
@@ -10,9 +9,11 @@ from flaskapi.run import db_engine
 
 Session = sqlalchemy.orm.sessionmaker()
 Session.configure(bind=db_engine)
-session = Session()
+Base.metadata.create_all(db_engine)
+
 
 def test_order_website_table():
+    session = Session()
     order_website = OrderWebsite(
         website_url='random.website.url.com',
         order_type='content'
@@ -26,10 +27,12 @@ def test_order_website_table():
     session.commit()
     empty_order = session.query(OrderWebsite) \
         .filter_by(website_url='random.website.url.com').first()
+    session.close()
     assert empty_order is None
 
 
 def test_website_content_table():
+    session = Session()
     order_website = OrderWebsite(
         website_url='random.website_content.url.com',
         order_type='content'
@@ -53,9 +56,12 @@ def test_website_content_table():
     session.commit()
     empty_order = session.query(WebsiteContent) \
         .filter_by(order_id=order_website_from_db.id).first()
+    session.close()
     assert empty_order is None
 
+
 def test_website_image_table():
+    session = Session()
     order_website = OrderWebsite(
         website_url='random.website_image.url.com',
         order_type='content'
@@ -95,11 +101,13 @@ def test_website_image_table():
         .filter_by(order_id=order_website_from_db.id).all()
 
     for website_image_from_db in website_images_from_db:
-        assert website_image_1.order_id == website_image_from_db.order_website.id
+        assert website_image_1.order_id == \
+            website_image_from_db.order_website.id
         session.delete(website_image_from_db)
 
     session.delete(order_website_from_db)
     session.commit()
     empty_order = session.query(WebsiteImage) \
         .filter_by(order_id=order_website_from_db.id).first()
+    session.close()
     assert empty_order is None
