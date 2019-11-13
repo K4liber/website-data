@@ -13,7 +13,7 @@ services:
         ports:
             - "5000:5000"
         volumes:
-            - ./api/:/code
+            - ./api/:/code:ro
         entrypoint: ./docker_entrypoint.sh
         depends_on:
             - redis
@@ -24,5 +24,4 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: root
         volumes:
-            - ./db:/docker-entrypoint-initdb.d/:ro
-        
+            - ./db-data:/var/lib/mysql

@@ -1,5 +1,6 @@
 from flask import request
-from sqlalchemy.exc import InterfaceError
+from sqlalchemy.exc import InterfaceError, ProgrammingError
+from sqlalchemy import create_engine
 
 from flaskapi.entities.base import Base
 from flaskapi.init import (
@@ -12,6 +13,7 @@ from flaskapi.worker import (
     pickup_order
 )
 from flaskapi.order.order_handler import order_type_to_class
+from flaskapi.config import config
 
 
 @api.route("/")
@@ -63,6 +65,17 @@ if __name__ == '__main__':
             db_connection = db_engine.connect()
         except InterfaceError:
             db_connection = None
+        except ProgrammingError:
+            tmp_engine = create_engine(
+                f'mysql+mysqlconnector://'
+                f'{config["db"]["user"]}:{config["db"]["password"]}'
+                f'@{config["db"]["host"]}:{config["db"]["port"]}')
+            db_list = [d[0] for d in tmp_engine.execute("SHOW DATABASES;")]
+            db_name = config['db']['database']
+
+            if db_name not in db_list:
+                tmp_engine.execute(f'CREATE DATABASE {db_name}')
+                print(f'Created database {db_name}')
 
     db_connection.close()
     print('Connection to db established.')
