@@ -2,6 +2,7 @@ from flask import request
 from sqlalchemy.exc import InterfaceError, ProgrammingError
 from sqlalchemy import create_engine
 from urllib.parse import urlparse
+from waitress import serve
 
 from flaskapi.entities.base import Base
 from flaskapi.init import (
@@ -86,4 +87,8 @@ if __name__ == '__main__':
     db_connection.close()
     print('Connection to db established.')
     Base.metadata.create_all(db_engine)
-    api.run(debug=False, host='0.0.0.0')
+
+    if config['env'] == 'dev':
+        api.run(debug=False, host='0.0.0.0')
+    else:
+        serve(api, host="0.0.0.0", port=5000)

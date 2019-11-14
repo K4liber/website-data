@@ -6,7 +6,7 @@ services:
         ports:
             - "6379:6379"
     api:
-        container_name: website_data
+        container_name: website_data_prod
         build:
             context: .
             dockerfile: Dockerfile

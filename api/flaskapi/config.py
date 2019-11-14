@@ -23,3 +23,4 @@ config['redis'] = {
     'host': services['redis']['container_name'],
     'port': services['redis']['ports'][0].split(':')[1]
 }
+config['env'] = services['api']['container_name'].split('_')[-1]
