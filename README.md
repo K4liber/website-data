@@ -1,4 +1,7 @@
 # website-data
+website-data is a a microservice providing functionality for downloading web content.
+All of the following commands are for linux.
+
 Build production environment:
 ```
 make install
