@@ -3,25 +3,30 @@ services:
     redis:
         container_name: redis
         image: redis:3.2.11
+        ports:
+            - "6379:6379"
     api:
-        container_name: website-data
+        container_name: website_data
         build:
-            context: ./api
+            context: .
             dockerfile: Dockerfile
         links:
             - db
         ports:
             - "5000:5000"
         volumes:
-            - ./api/:/code:ro
-        entrypoint: ./docker_entrypoint.sh
+            - ./:/code
+        entrypoint: watchmedo auto-restart --recursive --pattern="*.py" --directory="." ./docker_entrypoint.sh
         depends_on:
             - redis
     db:
+        container_name: mysql-db
         image: mysql:5.7
         ports:
             - "32000:3306"
         environment:
             MYSQL_ROOT_PASSWORD: root
         volumes:
-            - ./db-data:/var/lib/mysql
+            - ../db-data:/var/lib/mysql
+
+        

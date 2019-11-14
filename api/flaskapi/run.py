@@ -71,7 +71,7 @@ if __name__ == '__main__':
                 f'{config["db"]["user"]}:{config["db"]["password"]}'
                 f'@{config["db"]["host"]}:{config["db"]["port"]}')
             db_list = [d[0] for d in tmp_engine.execute("SHOW DATABASES;")]
-            db_name = config['db']['database']
+            db_name = config['db']['name']
 
             if db_name not in db_list:
                 tmp_engine.execute(f'CREATE DATABASE {db_name}')

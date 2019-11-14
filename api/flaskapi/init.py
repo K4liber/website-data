@@ -13,7 +13,7 @@ db_engine = sqlalchemy.create_engine(
     f'mysql+mysqlconnector://'
     f'{config["db"]["user"]}:{config["db"]["password"]}'
     f'@{config["db"]["host"]}:{config["db"]["port"]}/'
-    f'{config["db"]["database"]}')
+    f'{config["db"]["name"]}')
 Session = sqlalchemy.orm.sessionmaker()
 Session.configure(bind=db_engine)
 # Redis init

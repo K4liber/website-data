@@ -3,11 +3,11 @@ from sqlalchemy import (
     Column,
     Integer,
     TEXT,
-    BLOB,
     VARCHAR,
     ForeignKey
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.mysql import LONGBLOB
 
 
 class WebsiteImage(Base):
@@ -18,7 +18,7 @@ class WebsiteImage(Base):
     order_website = relationship("OrderWebsite",
                                  back_populates="website_images")
     caption = Column(TEXT())
-    img = Column(BLOB)
+    img = Column(LONGBLOB)
     img_type = Column(VARCHAR(15))
 
     def __repr__(self):

@@ -54,6 +54,7 @@ class ImagesOrder(Order):
                     img_type=img_type
                 )
                 session.add(website_image)
+                session.commit()
 
             order_website_from_db.order_status = True
             session.commit()
@@ -68,12 +69,20 @@ class ImagesOrder(Order):
         if len(website_images_from_db) == 0:
             return f'There are no images for order with ID = {order_id}'
 
-        zf_path = f'order_{order_id}.zip'
+        zf_filename = f'order_{order_id}.zip'
+        zf_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            '../../..', zf_filename
+        )
         zf = zipfile.ZipFile(zf_path, mode='w')
 
         for website_image in website_images_from_db:
             img_ext = supported_img_types[website_image.img_type]
-            img_path = f'img_{website_image.id}.{img_ext}'
+            img_filename = f'img_{website_image.id}.{img_ext}'
+            img_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                '../../..', img_filename
+            )
             f = open(img_path, 'wb')
             f.write(website_image.img)
             f.close()

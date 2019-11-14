@@ -37,17 +37,18 @@ def test_order_website_content():
     order_website_from_db = session.query(OrderWebsite) \
         .filter_by(id=order_id).first()
     assert order_website_from_db.website_url == "http://90minut.pl"
+    start_time = time.time()
 
-    if order_website_from_db.order_status:
-        website_content_from_db = session.query(WebsiteContent) \
-            .filter_by(order_id=order_id).first()
-        assert website_content_from_db is not None
-        session.delete(website_content_from_db)
-    else:
-        website_content_from_db = session.query(WebsiteContent) \
-            .filter_by(order_id=order_id).first()
-        assert website_content_from_db is None
+    while order_website_from_db.order_status is False:
+        if time.time() - start_time > 10:
+            break
+        session.commit()
 
+    assert time.time() - start_time < 10
+    website_content_from_db = session.query(WebsiteContent) \
+        .filter_by(order_id=order_id).first()
+    assert website_content_from_db is not None
+    session.delete(website_content_from_db)
     session.delete(order_website_from_db)
     session.commit()
     order_website_from_db = session.query(OrderWebsite) \
@@ -142,7 +143,7 @@ def test_pickup_order_content():
         .filter_by(id=order_id).first()
     start_time = time.time()
 
-    while order_website_from_db.order_status == False:
+    while order_website_from_db.order_status is False:
         if time.time() - start_time > 10:
             break
         session.commit()
@@ -158,7 +159,7 @@ def test_pickup_order_content():
 
     for key in response_dict.keys():
         assert key in {'order_id', 'content'}
-    
+
     session.delete(order_website_from_db)
     session.delete(website_content_from_db)
     session.commit()
@@ -179,7 +180,7 @@ def test_pickup_order_images():
         .filter_by(id=order_id).first()
     start_time = time.time()
 
-    while order_website_from_db.order_status == False:
+    while order_website_from_db.order_status is False:
         if time.time() - start_time > 10:
             break
         session.commit()
@@ -211,4 +212,3 @@ def test_pickup_order_images():
     session.delete(order_website_from_db)
     session.commit()
     session.close()
-
