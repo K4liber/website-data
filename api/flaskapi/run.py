@@ -1,6 +1,7 @@
 from flask import request
 from sqlalchemy.exc import InterfaceError, ProgrammingError
 from sqlalchemy import create_engine
+from urllib.parse import urlparse
 
 from flaskapi.entities.base import Base
 from flaskapi.init import (
@@ -26,6 +27,11 @@ def order_website_route():
     request_data = request.get_json()
     website_url = request_data['website_url']
     order_type = request_data['order_type']
+    parse_result = urlparse(website_url)
+
+    if not all([parse_result.scheme, parse_result.netloc]):
+        return f'`{website_url}` url have a wrong pattern.\n' \
+            f'URL correct patters: `http://name.domain(/optional_parts)`.\n'
 
     if order_type in order_type_to_class:
         order_id = order_website(website_url, order_type)

@@ -4,6 +4,7 @@ import re
 import zipfile
 from flask import Response
 import os
+from requests.exceptions import MissingSchema
 
 from flaskapi.order.order import Order
 from flaskapi.entities.order_website import (
@@ -34,7 +35,20 @@ class ImagesOrder(Order):
             images = soup.findAll('img', {'alt': True, 'src': True})
 
             for img in images:
-                response = requests.get(img['src'])
+                img_url = img['src']
+
+                try:
+                    response = requests.get(img_url)
+                except MissingSchema:
+                    img_url = order_website_from_db.website_url + \
+                        '/' + img['src']
+                try:
+                    response = requests.get(img_url)
+                except MissingSchema:
+                    print(f'Wrong image address: "{img_url} for website "'
+                          f'"{order_website_from_db.website_url}".')
+                    continue
+
                 img_data = response.content
                 img_type = response.headers['content-type']
 
