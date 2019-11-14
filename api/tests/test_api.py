@@ -33,7 +33,6 @@ def test_order_website_content():
     r = requests.post(url, verify=False, json=data)
     assert r.status_code == 200
     order_id = r.text.split()[-1]
-    time.sleep(2)
     session = Session()
     order_website_from_db = session.query(OrderWebsite) \
         .filter_by(id=order_id).first()
@@ -66,10 +65,18 @@ def test_order_website_images():
     r = requests.post(url, verify=False, json=data)
     assert r.status_code == 200
     order_id = r.text.split()[-1]
-    time.sleep(5)
     session = Session()
     order_website_from_db = session.query(OrderWebsite) \
         .filter_by(id=order_id).first()
+    start_time = time.time()
+
+    while order_website_from_db is None:
+        if time.time() - start_time > 10:
+            break
+        order_website_from_db = session.query(OrderWebsite) \
+            .filter_by(id=order_id).first()
+
+    assert time.time() - start_time < 10
     session.close()
     assert order_website_from_db.website_url == "http://facebook.pl"
 
@@ -108,7 +115,6 @@ def test_order_status():
     )
     session.add(order_website)
     session.commit()
-    time.sleep(3)
     url = f'http://api:5000/order_status/{order_website.id}'
     r = requests.get(url)
     assert r.status_code == 200
@@ -131,10 +137,17 @@ def test_pickup_order_content():
     r = requests.post(url, verify=False, json=data)
     assert r.status_code == 200
     order_id = r.text.split()[-1]
-    time.sleep(2)
     session = Session()
     order_website_from_db = session.query(OrderWebsite) \
         .filter_by(id=order_id).first()
+    start_time = time.time()
+
+    while order_website_from_db.order_status == False:
+        if time.time() - start_time > 10:
+            break
+        session.commit()
+
+    assert time.time() - start_time < 10
     website_content_from_db = session.query(WebsiteContent) \
         .filter_by(order_id=order_id).first()
     assert website_content_from_db is not None
@@ -161,10 +174,17 @@ def test_pickup_order_images():
     r = requests.post(url, verify=False, json=data)
     assert r.status_code == 200
     order_id = r.text.split()[-1]
-    time.sleep(2)
     session = Session()
     order_website_from_db = session.query(OrderWebsite) \
         .filter_by(id=order_id).first()
+    start_time = time.time()
+
+    while order_website_from_db.order_status == False:
+        if time.time() - start_time > 10:
+            break
+        session.commit()
+
+    assert time.time() - start_time < 10
     assert order_website_from_db.order_status
     website_images_from_db = session.query(WebsiteImage) \
         .filter_by(order_id=order_id).all()
