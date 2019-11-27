@@ -1,5 +1,11 @@
 # website-data
-website-data is a a microservice providing functionality for downloading web content.
+website-data is a a microservice providing functionality for downloading web content using following technologies:
+- Docker 
+- Flask
+- SQLAlchemy
+- redis
+- mysql
+
 All of the following commands are for linux.
 
 Build production environment:
